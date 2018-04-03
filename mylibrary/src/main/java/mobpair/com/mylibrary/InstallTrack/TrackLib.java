@@ -12,7 +12,6 @@ import android.util.Log;
 
 public class TrackLib {
     private String TAG = TrackLib.class.getName();
-    private String REFFERER_VALUE = "referrer";
     private static TrackLib instance = new TrackLib();
     private Util util;
     private String refferer_chk;
@@ -22,6 +21,7 @@ public class TrackLib {
     }
 
     void onReceive(Context context, Intent intent) {
+        String REFFERER_VALUE = "referrer";
         String referrer = intent.getStringExtra(REFFERER_VALUE);
 
         if (referrer != null) {
@@ -60,6 +60,13 @@ public class TrackLib {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             application.registerActivityLifecycleCallbacks(handler);
             application.registerComponentCallbacks(handler);
+        }
+
+
+        if (InternetConnectionClass.getInstance(application).isOnline()) {
+            Log.d(TAG, ":IF");
+        } else {
+            Log.d(TAG, ":ELSE");
         }
     }
 
