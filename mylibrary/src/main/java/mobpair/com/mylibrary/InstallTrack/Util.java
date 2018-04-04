@@ -41,6 +41,7 @@ class Util {
     /**
      * @param context context of used class
      */
+
     Util(final Context context) {
         mPrefs = context.getSharedPreferences(PREFERENCES, 0);
         mContext = context;
@@ -52,6 +53,7 @@ class Util {
      * @param name
      * @param value
      */
+
     private void putString(String name, String value) {
         mPrefs.edit().putString(name, value).apply();
     }
@@ -61,6 +63,7 @@ class Util {
      *
      * @param date date you want to store
      */
+
     void setCurrentDate(String date) {
         putString(CURRENT_DATE, date);
     }
@@ -80,6 +83,7 @@ class Util {
      *
      * @param refferer value of refferer
      */
+
     void setRefferer(String refferer) {
         putString(REFFERER, refferer);
     }

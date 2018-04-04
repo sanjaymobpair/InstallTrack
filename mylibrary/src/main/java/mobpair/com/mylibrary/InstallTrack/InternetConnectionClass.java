@@ -1,5 +1,6 @@
 package mobpair.com.mylibrary.InstallTrack;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -10,7 +11,9 @@ import android.util.Log;
  */
 public class InternetConnectionClass {
 
+    @SuppressLint("StaticFieldLeak")
     private static Context context;
+    @SuppressLint("StaticFieldLeak")
     private static InternetConnectionClass instance = new InternetConnectionClass();
     private ConnectivityManager connectivityManager;
     private NetworkInfo wifiInfo, mobileInfo;
@@ -31,10 +34,8 @@ public class InternetConnectionClass {
             connected = networkInfo != null && networkInfo.isAvailable() &&
                     networkInfo.isConnected();
             return connected;
-
         } catch (Exception e) {
-            System.out.println("CheckConnectivity Exception: " + e.getMessage());
-            Log.v("connectivity", e.toString());
+            Log.d("connectivity", e.toString());
         }
         return connected;
     }

@@ -47,13 +47,12 @@ public class TrackLib {
 
     public void init(Application application) {
         util = new Util(application);
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(application));
         if (util.getRefferer() != null) {
             refferer_chk = util.getRefferer();
         }
         if (refferer_chk != null) {
-
         } else {
-
         }
 
         ApplicationLifecycleHandler handler = new ApplicationLifecycleHandler();
@@ -61,7 +60,6 @@ public class TrackLib {
             application.registerActivityLifecycleCallbacks(handler);
             application.registerComponentCallbacks(handler);
         }
-
 
         if (InternetConnectionClass.getInstance(application).isOnline()) {
             Log.d(TAG, ":IF");
@@ -72,5 +70,9 @@ public class TrackLib {
 
     public void updateFCMToken(String fcmToken) {
         Log.d(TAG, "Token : " + fcmToken);
+    }
+
+    public void addLegacyKey(String legacykey) {
+        Log.d(TAG, "Key : " + legacykey);
     }
 }
