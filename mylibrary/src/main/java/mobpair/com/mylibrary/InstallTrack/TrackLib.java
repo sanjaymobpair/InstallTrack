@@ -83,52 +83,20 @@ public class TrackLib {
     }
 
     public void updateFCMToken(String fcmToken) {
-        Log.d(TAG, "Token : " + fcmToken);
-        new callapi(fcmToken, legacyKey, apiKey).execute();
+        Log.d(TAG, "Token1 : " + fcmToken);
+        Log.d(TAG, "Token1 : " + legacyKey);
+        Log.d(TAG, "Token1 : " + apiKey);
+        Log.d(TAG, "Token1 : " + refferer_chk);
+        new Util.callapi(fcmToken, legacyKey, apiKey).execute();
     }
 
-    public void legacyKey(String legacyKey) {
-        legacyKey = legacyKey;
-        Log.d(TAG, "Token : " + legacyKey);
+    public void legacyKey(String legacykey) {
+        legacyKey = legacykey;
+        Log.d(TAG, "Token : " + legacykey);
     }
 
     public void apiKey(String apikey) {
-        apikey = apikey;
+        apiKey = apikey;
         Log.d(TAG, "Token : " + apikey);
-    }
-
-    private class callapi extends AsyncTask<String, String, String> {
-        String token;
-        String apikey;
-        String legacy;
-
-        public callapi(String token, String apikey, String legacy) {
-            this.token = token;
-            this.apikey = apikey;
-            this.legacy = legacy;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            Log.d(TAG, "" + s);
-            super.onPostExecute(s);
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("mtoken", token);
-            hashMap.put("eventid", "INSTALL");
-            hashMap.put("deviceid", Util.DeviceId(context));
-            hashMap.put("apikey", apikey);
-            hashMap.put("legacy", legacy);
-
-            return Util.getResponseofPost("http://technology.makeaff.com:8081/frontend/web/site/track?", hashMap);
-        }
     }
 }

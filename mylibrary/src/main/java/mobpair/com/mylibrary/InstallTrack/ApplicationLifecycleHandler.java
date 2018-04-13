@@ -25,7 +25,6 @@ public class ApplicationLifecycleHandler implements Application.ActivityLifecycl
     private static final String TAG = ApplicationLifecycleHandler.class.getName();
     private static boolean isInBackground = true;
     private String getDatePref;
-    private String formattedDate;
     private Util util;
 
     @Override
@@ -33,14 +32,14 @@ public class ApplicationLifecycleHandler implements Application.ActivityLifecycl
         util = new Util(activity);
         Toast.makeText(activity, "onActivityCreated", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onActivityCreated:" + getDatePref);
-        if (getDatePref != null) {
+       /* if (getDatePref != null) {
             if (getDatePref.equalsIgnoreCase(formattedDate)) {
                 Log.d(TAG, "onActivityCreated : Equals");
             } else {
                 util.setCurrentDate(formattedDate);
                 Log.d(TAG, "onActivityCreated : NotEquals");
             }
-        }
+        }*/
     }
 
     @Override
@@ -56,7 +55,7 @@ public class ApplicationLifecycleHandler implements Application.ActivityLifecycl
         Date date = Calendar.getInstance().getTime();
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-        formattedDate = df.format(date);
+        String formattedDate = df.format(date);
 
         Toast.makeText(activity, "" + util.getCurrentDate(), Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Date" + util.getCurrentDate());
@@ -64,7 +63,7 @@ public class ApplicationLifecycleHandler implements Application.ActivityLifecycl
 
         if (isInBackground) {
             if (getDatePref.equalsIgnoreCase(formattedDate)) {
-                Toast.makeText(activity, "onActivityResumed : Equals", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "onActivityResumed : Equals  ", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onActivityResumed : Equals");
             } else {
                 util.setCurrentDate(formattedDate);

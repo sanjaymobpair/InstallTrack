@@ -3,13 +3,11 @@ package mobpair.com.mylibrary.InstallTrack;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.StrictMode;
 import android.provider.Settings;
 import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -28,7 +26,6 @@ import javax.net.ssl.HttpsURLConnection;
 import mobpair.com.mylibrary.AuthFailureError;
 import mobpair.com.mylibrary.DefaultRetryPolicy;
 import mobpair.com.mylibrary.NetworkError;
-import mobpair.com.mylibrary.NoConnectionError;
 import mobpair.com.mylibrary.ParseError;
 import mobpair.com.mylibrary.Request;
 import mobpair.com.mylibrary.RequestQueue;
@@ -48,7 +45,8 @@ import mobpair.com.mylibrary.toolbox.Volley;
  * {@link Util class is used to store sharedpreference }
  */
 class Util {
-    private Context mContext;
+    @SuppressLint("StaticFieldLeak")
+    private static Context mContext;
     private static String CURRENT_DATE = "currentdate";
     private static String REFFERER = "refferer";
     private final SharedPreferences mPrefs;
@@ -141,8 +139,6 @@ class Util {
                     message = "Cannot connect to Internet...Please check your connection!";
                 } else if (volleyError instanceof ParseError) {
                     message = "Parsing error! Please try again after some time!!";
-                } else if (volleyError instanceof NoConnectionError) {
-                    message = "Cannot connect to Internet...Please check your connection!";
                 } else if (volleyError instanceof TimeoutError) {
                     message = "Connection TimeOut! Please check your internet connection.";
                 }
@@ -233,7 +229,7 @@ class Util {
 
     public static String getResponseofGet(String URL) {
         URL url;
-        String response = "";
+        StringBuilder response = new StringBuilder();
         try {
 
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -262,10 +258,10 @@ class Util {
                 String line;
                 BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 while ((line = br.readLine()) != null) {
-                    response += line;
+                    response.append(line);
                 }
             } else {
-                response = "";
+                response = new StringBuilder();
 
             }
         } catch (Exception e) {
@@ -273,7 +269,7 @@ class Util {
         }
 
         Log.d("jai", "response :" + response);
-        return response;
+        return response.toString();
     }
 
     private static String getPostDataString(HashMap<String, String> params) throws
@@ -313,6 +309,40 @@ class Util {
 
         }
         return response.toString();
+    }
+
+    public static class callapi extends AsyncTask<String, String, String> {
+        String token;
+        String apikey;
+        String legacy;
+
+        public callapi(String token, String apikey, String legacy) {
+            this.token = token;
+            this.apikey = apikey;
+            this.legacy = legacy;
         }
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            Log.d("Util", "" + s);
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("mtoken", token);
+            hashMap.put("eventid", "INSTALL");
+            hashMap.put("deviceid", Util.DeviceId(mContext));
+            hashMap.put("apikey", apikey);
+            hashMap.put("legacy", legacy);
+
+            return Util.getResponseofPost("http://technology.makeaff.com:8081/frontend/web/site/track?", hashMap);
+        }
+    }
 }
