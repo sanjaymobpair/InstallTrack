@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Created by ${Mobpair} on 3/4/18.
@@ -16,7 +17,6 @@ public class InternetConnectionClass {
     @SuppressLint("StaticFieldLeak")
     private static InternetConnectionClass instance = new InternetConnectionClass();
     private ConnectivityManager connectivityManager;
-    private NetworkInfo wifiInfo, mobileInfo;
     private boolean connected = false;
 
     public static InternetConnectionClass getInstance(Context ctx) {
@@ -25,6 +25,7 @@ public class InternetConnectionClass {
     }
 
     public boolean isOnline() {
+        Toast.makeText(context, "InternetConnectionClass : isOnline Called", Toast.LENGTH_SHORT).show();
         try {
             connectivityManager = (ConnectivityManager) context
                     .getSystemService(Context.CONNECTIVITY_SERVICE);

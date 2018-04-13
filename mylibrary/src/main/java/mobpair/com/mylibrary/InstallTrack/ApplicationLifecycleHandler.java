@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -30,6 +31,7 @@ public class ApplicationLifecycleHandler implements Application.ActivityLifecycl
     @Override
     public void onActivityCreated(Activity activity, Bundle bundle) {
         util = new Util(activity);
+        Toast.makeText(activity, "onActivityCreated", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onActivityCreated:" + getDatePref);
         if (getDatePref != null) {
             if (getDatePref.equalsIgnoreCase(formattedDate)) {
@@ -48,6 +50,7 @@ public class ApplicationLifecycleHandler implements Application.ActivityLifecycl
 
     @Override
     public void onActivityResumed(Activity activity) {
+        Toast.makeText(activity, "onActivityResumed", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onActivityResumed");
         Log.d(TAG, "onActivityResumed :" + getDatePref);
         Date date = Calendar.getInstance().getTime();
@@ -55,14 +58,17 @@ public class ApplicationLifecycleHandler implements Application.ActivityLifecycl
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         formattedDate = df.format(date);
 
+        Toast.makeText(activity, "" + util.getCurrentDate(), Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Date" + util.getCurrentDate());
         getDatePref = util.getCurrentDate();
 
         if (isInBackground) {
             if (getDatePref.equalsIgnoreCase(formattedDate)) {
+                Toast.makeText(activity, "onActivityResumed : Equals", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onActivityResumed : Equals");
             } else {
                 util.setCurrentDate(formattedDate);
+                Toast.makeText(activity, "onActivityResumed : NotEquals", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onActivityResumed : NotEquals");
             }
             Log.d(TAG, "app went to foreground");

@@ -1,6 +1,5 @@
 package mobpair.com.mylibrary.InstallTrack;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
@@ -9,17 +8,12 @@ import android.content.Intent;
 import android.util.Log;
 
 /**
- * Created by ${Mobpair} on 19/2/18.
- */
-
-/**
  * when UncaughtException occur and crash app that this class help to reopen app
  */
 public class MyExceptionHandler implements Thread.UncaughtExceptionHandler {
-
     private Application activity;
 
-    public MyExceptionHandler(Application a) {
+    MyExceptionHandler(Application a) {
         activity = a;
     }
 

@@ -48,6 +48,7 @@ public final class HttpResponse {
      * @param content an {@link InputStream} of the response content. May be null to indicate that
      *     the response has no content.
      */
+
     public HttpResponse(
             int statusCode, List<Header> headers, int contentLength, InputStream content) {
         mStatusCode = statusCode;
