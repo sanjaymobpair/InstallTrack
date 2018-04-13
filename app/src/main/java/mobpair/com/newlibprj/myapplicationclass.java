@@ -13,5 +13,6 @@ public class myapplicationclass extends Application {
     public void onCreate() {
         super.onCreate();
         TrackLib.getInstance().init(this);
+        TrackLib.getInstance().legacyKey("legacy");
     }
 }

@@ -22,7 +22,8 @@ public class TrackLib {
     private String TAG = TrackLib.class.getName();
     private static TrackLib instance = new TrackLib();
     private Util util;
-    private String refferer_chk,deviceId;
+    private String refferer_chk, legacyKey, apiKey;
+    private Context context;
 
     public static TrackLib getInstance() {
         return instance;
@@ -44,6 +45,7 @@ public class TrackLib {
     public void init(Application application) {
 
         util = new Util(application);
+        context = application;
         Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(application));
         if (util.getRefferer() != null) {
             refferer_chk = util.getRefferer();
@@ -59,8 +61,6 @@ public class TrackLib {
             application.registerActivityLifecycleCallbacks(handler);
             application.registerComponentCallbacks(handler);
         }
-
-        deviceId = util.DeviceId(application);
         if (InternetConnectionClass.getInstance(application).isOnline()) {
             Log.d(TAG, ":IF");
         } else {
@@ -84,17 +84,29 @@ public class TrackLib {
 
     public void updateFCMToken(String fcmToken) {
         Log.d(TAG, "Token : " + fcmToken);
-        new callapi().execute();
+        new callapi(fcmToken, legacyKey, apiKey).execute();
     }
 
+    public void legacyKey(String legacyKey) {
+        legacyKey = legacyKey;
+        Log.d(TAG, "Token : " + legacyKey);
+    }
+
+    public void apiKey(String apikey) {
+        apikey = apikey;
+        Log.d(TAG, "Token : " + apikey);
+    }
 
     private class callapi extends AsyncTask<String, String, String> {
-        String token = "dfd8PvCg-34:APA91bEMXuHEbCobUorCp0ZyEIgnqOuUT0";
-        String deviceid = "ahdjs";
+        String token;
+        String apikey;
+        String legacy;
 
-        String apikey = "fejfkhnskjf";
-        String legacy = "fsjhkjf";
-
+        public callapi(String token, String apikey, String legacy) {
+            this.token = token;
+            this.apikey = apikey;
+            this.legacy = legacy;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -112,7 +124,7 @@ public class TrackLib {
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("mtoken", token);
             hashMap.put("eventid", "INSTALL");
-            hashMap.put("deviceid",deviceid);
+            hashMap.put("deviceid", Util.DeviceId(context));
             hashMap.put("apikey", apikey);
             hashMap.put("legacy", legacy);
 
