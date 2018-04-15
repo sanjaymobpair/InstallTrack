@@ -1,5 +1,7 @@
 package mobpair.com.newlibprj;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -13,6 +15,7 @@ import java.util.Objects;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgService";
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Log.d(TAG, "From: " + remoteMessage.getFrom());

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
+import android.webkit.WebView;
 import android.widget.TabHost;
 
 import org.json.JSONException;
@@ -24,6 +25,7 @@ public class TrackLib {
     private Util util;
     private String refferer_chk, legacyKey, apiKey;
     private Context context;
+    String userAgent;
 
     public static TrackLib getInstance() {
         return instance;
@@ -43,9 +45,9 @@ public class TrackLib {
     }
 
     public void init(Application application) {
-
         util = new Util(application);
         context = application;
+        userAgent = new WebView(application).getSettings().getUserAgentString();
         Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(application));
         if (util.getRefferer() != null) {
             refferer_chk = util.getRefferer();
@@ -61,12 +63,12 @@ public class TrackLib {
             application.registerActivityLifecycleCallbacks(handler);
             application.registerComponentCallbacks(handler);
         }
+
         if (InternetConnectionClass.getInstance(application).isOnline()) {
             Log.d(TAG, ":IF");
         } else {
             Log.d(TAG, ":ELSE");
         }
-
 
         Util util = new Util(application);
         /*util.SendDeviceId(new Util.CallBack() {
@@ -87,7 +89,8 @@ public class TrackLib {
         Log.d(TAG, "Token1 : " + legacyKey);
         Log.d(TAG, "Token1 : " + apiKey);
         Log.d(TAG, "Token1 : " + refferer_chk);
-        new Util.callapi(fcmToken, legacyKey, apiKey).execute();
+        Log.d(TAG, "user : " + userAgent);
+        new Util.callapi(fcmToken, legacyKey, apiKey, userAgent).execute();
     }
 
     public void legacyKey(String legacykey) {

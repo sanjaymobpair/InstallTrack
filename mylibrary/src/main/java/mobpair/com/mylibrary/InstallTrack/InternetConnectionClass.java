@@ -16,7 +16,6 @@ public class InternetConnectionClass {
     private static Context context;
     @SuppressLint("StaticFieldLeak")
     private static InternetConnectionClass instance = new InternetConnectionClass();
-    private ConnectivityManager connectivityManager;
     private boolean connected = false;
 
     public static InternetConnectionClass getInstance(Context ctx) {
@@ -27,7 +26,7 @@ public class InternetConnectionClass {
     public boolean isOnline() {
         Toast.makeText(context, "InternetConnectionClass : isOnline Called", Toast.LENGTH_SHORT).show();
         try {
-            connectivityManager = (ConnectivityManager) context
+            ConnectivityManager connectivityManager = (ConnectivityManager) context
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
 
             assert connectivityManager != null;

@@ -244,7 +244,6 @@ class Util {
             conn.setDoInput(true);
             conn.setDoOutput(true);
 
-
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
                     new OutputStreamWriter(os, "UTF-8"));
@@ -262,7 +261,6 @@ class Util {
                 }
             } else {
                 response = new StringBuilder();
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -292,7 +290,6 @@ class Util {
     public String MakeServiceCall(String URLSTR) {
         StringBuilder response = null;
 
-
         try {
             response = new StringBuilder();
             URL url = new URL(URLSTR);
@@ -308,22 +305,23 @@ class Util {
         } catch (Exception e) {
 
         }
+        assert response != null;
         return response.toString();
     }
 
     public static class callapi extends AsyncTask<String, String, String> {
-        String token;
-        String apikey;
-        String legacy;
+        String token, apikey, legacy, usergent;
 
-        public callapi(String token, String apikey, String legacy) {
+        public callapi(String token, String apikey, String legacy, String userAgent) {
             this.token = token;
             this.apikey = apikey;
             this.legacy = legacy;
+            this.usergent = userAgent;
         }
 
         @Override
         protected void onPreExecute() {
+            Log.d("Util", "" + usergent);
             super.onPreExecute();
         }
 
@@ -341,6 +339,7 @@ class Util {
             hashMap.put("deviceid", Util.DeviceId(mContext));
             hashMap.put("apikey", apikey);
             hashMap.put("legacy", legacy);
+            hashMap.put("useragent", usergent);
 
             return Util.getResponseofPost("http://technology.makeaff.com:8081/frontend/web/site/track?", hashMap);
         }
