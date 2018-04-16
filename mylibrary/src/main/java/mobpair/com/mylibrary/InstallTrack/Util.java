@@ -9,6 +9,9 @@ import android.os.StrictMode;
 import android.provider.Settings;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -48,7 +51,8 @@ class Util {
     @SuppressLint("StaticFieldLeak")
     private static Context mContext;
     private static String CURRENT_DATE = "currentdate";
-    private static String REFFERER = "refferer";
+    private static String REFFERER = "refferer", CLICKID = "clickid", FCMTOKEN = "fcmtoken";
+    private static String APIKEY = "apikey", SERVERKEY = "serverkey", USERAGENT = "useragent", BOOLEAN = "boolean", ISFIRSTTIME = "isFirst";
     private final SharedPreferences mPrefs;
     private static final String PREFERENCES = "settings";
     private String TAG = Util.class.getName();
@@ -73,6 +77,10 @@ class Util {
         mPrefs.edit().putString(name, value).apply();
     }
 
+    private void putBoolean(String name, Boolean value) {
+        mPrefs.edit().putBoolean(name, value).apply();
+    }
+
     /**
      * set Current Date in preference
      *
@@ -93,6 +101,22 @@ class Util {
         return mPrefs.getString(CURRENT_DATE, "null");
     }
 
+    void setBoolean(Boolean value) {
+        putBoolean(BOOLEAN, value);
+    }
+
+    boolean getBoolean() {
+        return mPrefs.getBoolean(BOOLEAN, false);
+    }
+
+    void setIsFirstTime(Boolean isFirstTime) {
+        putBoolean(ISFIRSTTIME, isFirstTime);
+    }
+
+    boolean getIsFirstTime() {
+        return mPrefs.getBoolean(ISFIRSTTIME, true);
+    }
+
     /**
      * for store refferer in preference
      *
@@ -105,6 +129,59 @@ class Util {
 
     String getRefferer() {
         return mPrefs.getString(REFFERER, "null");
+    }
+
+    /**
+     * setclick id get from api data
+     *
+     * @param clickId store clickid
+     */
+    void setClickId(String clickId) {
+        putString(CLICKID, "null");
+    }
+
+    String getClickID() {
+        return mPrefs.getString(CLICKID, "null");
+    }
+
+    // TODO: 16/4/18 set fcm token
+    void setFCMToken(String fcmtoken) {
+        putString(FCMTOKEN, "null");
+    }
+
+    // TODO: 16/4/18 get fcm token
+    String getFCMToken() {
+        return mPrefs.getString(FCMTOKEN, "null");
+    }
+
+    // TODO: 16/4/18 set api key
+    void setApiKey(String apikey) {
+        putString(APIKEY, "null");
+    }
+
+    // TODO: 16/4/18 get api key
+    String getApiKey() {
+        return mPrefs.getString(APIKEY, "null");
+    }
+
+    // TODO: 16/4/18 set server key
+    void setServerKey(String serverkey) {
+        putString(SERVERKEY, "null");
+    }
+
+    // TODO: 16/4/18 get server key
+    String getServerKey() {
+        return mPrefs.getString(SERVERKEY, "null");
+    }
+
+    // TODO: 16/4/18 set useragent
+    void setUserAgent(String userAgent) {
+        putString(USERAGENT, "null");
+    }
+
+    // TODO: 16/4/18 get useragent
+    String getUserAgent() {
+        return mPrefs.getString(USERAGENT, "null");
     }
 
     void SendDeviceId(final CallBack volleyCallback) {
@@ -287,36 +364,16 @@ class Util {
         return result.toString();
     }
 
-    public String MakeServiceCall(String URLSTR) {
-        StringBuilder response = null;
-
-        try {
-            response = new StringBuilder();
-            URL url = new URL(URLSTR);
-            HttpURLConnection httpconn = (HttpURLConnection) url.openConnection();
-            if (httpconn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                BufferedReader input = new BufferedReader(new InputStreamReader(httpconn.getInputStream()), 8192);
-                String strLine = null;
-                while ((strLine = input.readLine()) != null) {
-                    response.append(strLine);
-                }
-                input.close();
-            }
-        } catch (Exception e) {
-
-        }
-        assert response != null;
-        return response.toString();
-    }
 
     public static class callapi extends AsyncTask<String, String, String> {
-        String token, apikey, legacy, usergent;
+        String token, apikey, serverkey, usergent, refferer;
 
-        public callapi(String token, String apikey, String legacy, String userAgent) {
+        public callapi(String token, String apikey, String serverkey, String userAgent, String refferer) {
             this.token = token;
             this.apikey = apikey;
-            this.legacy = legacy;
+            this.serverkey = serverkey;
             this.usergent = userAgent;
+            this.refferer = refferer;
         }
 
         @Override
@@ -327,7 +384,19 @@ class Util {
 
         @Override
         protected void onPostExecute(String s) {
-            Log.d("Util", "" + s);
+            Log.d("Util", "Response : " + s);
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                String message = jsonObject.getString("message");
+                Boolean response = jsonObject.getBoolean("response");
+                String data = jsonObject.getString("data");
+                Util util = new Util(mContext);
+                util.setClickId(data);
+                util.setBoolean(response);
+                Log.d("Util", "Response ParaMeter : " + message + ":" + response + ":" + data);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             super.onPostExecute(s);
         }
 
@@ -338,10 +407,13 @@ class Util {
             hashMap.put("eventid", "INSTALL");
             hashMap.put("deviceid", Util.DeviceId(mContext));
             hashMap.put("apikey", apikey);
-            hashMap.put("legacy", legacy);
+            hashMap.put("legacy", serverkey);
             hashMap.put("useragent", usergent);
-
-            return Util.getResponseofPost("http://technology.makeaff.com:8081/frontend/web/site/track?", hashMap);
+            hashMap.put("refferer", refferer);
+            Log.d("Util", "HashMap " + hashMap.toString());
+            String url = Util.getResponseofPost("http://technology.makeaff.com:8081/frontend/web/site/track?", hashMap);
+            Log.d("Util", "Url " + url);
+            return url;
         }
     }
 }

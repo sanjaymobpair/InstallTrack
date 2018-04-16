@@ -14,7 +14,7 @@ public class myapplicationclass extends Application {
     public void onCreate() {
         super.onCreate();
         TrackLib.getInstance().init(this);
-        TrackLib.getInstance().legacyKey(serverKey);
-        TrackLib.getInstance().apiKey("apikey");
+        TrackLib.getInstance().serverKey(serverKey);
+        TrackLib.getInstance().apiKey("dda15837a386ce7a5b7e3f99fefa3394_5ad43ed885c80f14511897d6");
     }
 }

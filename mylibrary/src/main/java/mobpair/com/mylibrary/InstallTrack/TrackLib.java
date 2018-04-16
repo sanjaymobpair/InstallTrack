@@ -23,9 +23,9 @@ public class TrackLib {
     private String TAG = TrackLib.class.getName();
     private static TrackLib instance = new TrackLib();
     private Util util;
-    private String refferer_chk, legacyKey, apiKey;
+    private String refferer_chk, serverKey, apiKey, fcmToken;
     private Context context;
-    String userAgent;
+    private String userAgent;
 
     public static TrackLib getInstance() {
         return instance;
@@ -47,6 +47,7 @@ public class TrackLib {
     public void init(Application application) {
         util = new Util(application);
         context = application;
+        Log.d(TAG, "Init : ServerKey" + serverKey + "ApiKey :" + apiKey + "FcmToken" + fcmToken);
         userAgent = new WebView(application).getSettings().getUserAgentString();
         Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(application));
         if (util.getRefferer() != null) {
@@ -84,21 +85,33 @@ public class TrackLib {
         });*/
     }
 
-    public void updateFCMToken(String fcmToken) {
+    public void updateFCMToken(String fcmtoken) {
+        util.setIsFirstTime(false);
+        util.setFCMToken(fcmToken);
+        fcmToken = fcmtoken;
         Log.d(TAG, "Token1 : " + fcmToken);
-        Log.d(TAG, "Token1 : " + legacyKey);
+        Log.d(TAG, "Token1 : " + serverKey);
         Log.d(TAG, "Token1 : " + apiKey);
         Log.d(TAG, "Token1 : " + refferer_chk);
         Log.d(TAG, "user : " + userAgent);
-        new Util.callapi(fcmToken, legacyKey, apiKey, userAgent).execute();
+
+        Boolean res = util.getBoolean();
+        Log.d(TAG, "Boolean" + res);
+        if (res) {
+
+        } else {
+            new Util.callapi(fcmToken, apiKey, serverKey, userAgent, refferer_chk).execute();
+        }
     }
 
-    public void legacyKey(String legacykey) {
-        legacyKey = legacykey;
-        Log.d(TAG, "Token : " + legacykey);
+    public void serverKey(String serverkey) {
+        util.setServerKey(serverkey);
+        serverKey = serverkey;
+        Log.d(TAG, "Token : " + serverkey);
     }
 
     public void apiKey(String apikey) {
+        util.setApiKey(apiKey);
         apiKey = apikey;
         Log.d(TAG, "Token : " + apikey);
     }

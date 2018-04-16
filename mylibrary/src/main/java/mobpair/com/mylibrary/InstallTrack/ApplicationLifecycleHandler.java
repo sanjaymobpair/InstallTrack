@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.BufferedOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -66,9 +67,28 @@ public class ApplicationLifecycleHandler implements Application.ActivityLifecycl
                 Toast.makeText(activity, "onActivityResumed : Equals  ", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onActivityResumed : Equals");
             } else {
-                util.setCurrentDate(formattedDate);
-                Toast.makeText(activity, "onActivityResumed : NotEquals", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "onActivityResumed : NotEquals");
+                boolean isFirstTime = util.getIsFirstTime();
+
+                Log.d(TAG, "isFirst" + isFirstTime);
+                if (isFirstTime) {
+                    Log.d(TAG, "isFirst : If");
+                } else {
+                    Log.d(TAG, "isFirst : Else");
+
+                    String fcmtoken, serverkey, apikey, useragent, clickId;
+
+                    fcmtoken = util.getFCMToken();
+                    serverkey = util.getServerKey();
+                    apikey = util.getApiKey();
+                    useragent = util.getUserAgent();
+                    clickId = util.getClickID();
+                    util.setCurrentDate(formattedDate);
+
+                    new Util.callapi(fcmtoken, apikey, serverkey, useragent, clickId);
+                    Toast.makeText(activity, "onActivityResumed : NotEquals", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onActivityResumed : NotEquals");
+                }
+
             }
             Log.d(TAG, "app went to foreground");
             isInBackground = false;
