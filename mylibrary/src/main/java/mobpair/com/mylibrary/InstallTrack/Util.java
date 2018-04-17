@@ -53,6 +53,7 @@ class Util {
     private static String CURRENT_DATE = "currentdate";
     private static String REFFERER = "refferer", CLICKID = "clickid", FCMTOKEN = "fcmtoken";
     private static String APIKEY = "apikey", SERVERKEY = "serverkey", USERAGENT = "useragent", BOOLEAN = "boolean", ISFIRSTTIME = "isFirst";
+    private static String ISERROR = "iserror";
     private final SharedPreferences mPrefs;
     private static final String PREFERENCES = "settings";
     private String TAG = Util.class.getName();
@@ -115,6 +116,14 @@ class Util {
 
     boolean getIsFirstTime() {
         return mPrefs.getBoolean(ISFIRSTTIME, true);
+    }
+
+    void setErrorResponse(Boolean isError) {
+        putBoolean(ISERROR, isError);
+    }
+
+    boolean getErrorResponse() {
+        return mPrefs.getBoolean(ISERROR, false);
     }
 
     /**
@@ -185,66 +194,6 @@ class Util {
         return mPrefs.getString(USERAGENT, "null");
     }
 
-    void SendDeviceId(final CallBack volleyCallback) {
-        RequestQueue requestQueue = Volley.newRequestQueue(mContext);
-        requestQueue.start();
-
-        String postURlDeviceId = "http://technology.makeaff.com:8081/frontend/web/site/track";
-        StringRequest posStringRequest = new StringRequest(Request.Method.POST, postURlDeviceId, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d("ClickID@@", "Error :  " + response);
-                /*try {
-                    JSONObject obj = new JSONObject(response);
-                    String ClickId = obj.getString("clickid");
-                    Log.d("ClickID@@", "" + ClickId);
-                    volleyCallback.onSuccess(response);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }*/
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                volleyCallback.onError(String.valueOf(volleyError));
-                Log.d("ClickID@@", "Error :  " + volleyError);
-                String message = null;
-                if (volleyError instanceof NetworkError) {
-                    message = "Cannot connect to Internet...Please check your connection!";
-                } else if (volleyError instanceof ServerError) {
-                    message = "The server could not be found. Please try again after some time!!";
-                } else if (volleyError instanceof AuthFailureError) {
-                    message = "Cannot connect to Internet...Please check your connection!";
-                } else if (volleyError instanceof ParseError) {
-                    message = "Parsing error! Please try again after some time!!";
-                } else if (volleyError instanceof TimeoutError) {
-                    message = "Connection TimeOut! Please check your internet connection.";
-                }
-                Log.d(TAG, "" + message);
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> stringMap = new HashMap<>();
-                stringMap.put("Content-Type", "text/html");
-                stringMap.put("mtoken", "dfd8PvCg-34:APA91bEMXuHEbCobUorCp0ZyEIgnqOuUT00u3WBw__Cl7-N9LYp_SSJjmGfhFXxOUoy-uvo0OD3D1N0n65-X_4lPsn3JOJTltyyTue0WLJwGQyLJ5QZvFjy-ze-xxhabqbs7swlOV7f7");
-                stringMap.put("eventid", "INSTALL");
-                stringMap.put("deviceid", DeviceId(mContext));
-                stringMap.put("apikey", "dda15837a386ce7a5b7e3f99fefa3394_5acda0ab85c80f0af969fc8e");
-                stringMap.put("legacy", "AAAAYPhe458:APA91bEjDh0sBtjxcAB0pLTD11e88i1D4hiR5GQO9bOLnlxFKQuN5rLL2K4QiS8Jv0PTZ17DBdSRZb9nnIjXsXxAKwXwvG3OXSO6DkaxPrBaxvp-vs_OLrCuXCXn2LAKGY3_T9UU9W-A");
-                Log.d(TAG, ": PARA : " + stringMap);
-                return stringMap;
-            }
-        };
-
-        int socketTimeout = 30000;
-        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        posStringRequest.setRetryPolicy(policy);
-        posStringRequest.setShouldCache(false);
-        requestQueue.add(posStringRequest);
-        requestQueue.start();
-    }
-
     @SuppressLint({"ObsoleteSdkInt", "HardwareIds"})
     public static String DeviceId(Context context) {
         @SuppressLint("HardwareIds")
@@ -254,14 +203,6 @@ class Util {
         }
         return ANDROID_ID;
     }
-
-    // TODO: 20/2/18 Create interface of volley response
-    public interface CallBack {
-        void onSuccess(String result);
-
-        void onError(String error);
-    }
-
 
     public static String getResponseofPost(String URL, HashMap<String, String> postDataParams) {
         java.net.URL url;
@@ -287,17 +228,23 @@ class Util {
             writer.close();
             os.close();
             int responseCode = conn.getResponseCode();
-            Log.d("URL - ResponseCode", URL + " - " + responseCode);
+            Log.d("Util", "Response Code" + URL + " - " + responseCode);
             if (responseCode == HttpsURLConnection.HTTP_OK) {
+                Log.d("Util", "If" + responseCode);
                 String line;
                 BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 while ((line = br.readLine()) != null) {
                     response += line;
                 }
-            } else {
+            } else if (responseCode == HttpURLConnection.HTTP_CLIENT_TIMEOUT) {
+                Log.d("Util", "TimeOut" + responseCode);
                 response = "";
             }
             Log.d("jai", "response :" + response);
+
+            if (response == null || response == "" || response.equals("")) {
+                Log.d("jai", "response : null" + response);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -386,18 +333,23 @@ class Util {
 
         @Override
         protected void onPostExecute(String s) {
-            Log.d("Util", "Response : " + s);
-            try {
-                JSONObject jsonObject = new JSONObject(s);
-                String message = jsonObject.getString("message");
-                Boolean response = jsonObject.getBoolean("response");
-                String data = jsonObject.getString("data");
-                Util util = new Util(mContext);
-                util.setClickId(data);
-                util.setBoolean(response);
-                Log.d("Util", "Response ParaMeter : " + message + ":" + response + ":" + data);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            Util util = new Util(mContext);
+            if (s == null || s == "") {
+                util.setErrorResponse(true);
+                Log.d("Util", "Response : " + s);
+            } else {
+                util.setErrorResponse(false);
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+                    String message = jsonObject.getString("message");
+                    Boolean response = jsonObject.getBoolean("response");
+                    String data = jsonObject.getString("data");
+                    util.setClickId(data);
+                    util.setBoolean(response);
+                    Log.d("Util", "Response ParaMeter : " + message + ":" + response + ":" + data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
             super.onPostExecute(s);
         }

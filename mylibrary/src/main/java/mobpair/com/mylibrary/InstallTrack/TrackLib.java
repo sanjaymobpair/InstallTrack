@@ -1,19 +1,11 @@
 package mobpair.com.mylibrary.InstallTrack;
 
 import android.app.Application;
-import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 import android.webkit.WebView;
-import android.widget.TabHost;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
 
 /**
  * Created by ${Mobpair} on 21/3/18.
@@ -67,25 +59,6 @@ public class TrackLib {
             application.registerActivityLifecycleCallbacks(handler);
             application.registerComponentCallbacks(handler);
         }
-
-        if (InternetConnectionClass.getInstance(application).isOnline()) {
-            Log.d(TAG, ":IF");
-        } else {
-            Log.d(TAG, ":ELSE");
-        }
-
-        Util util = new Util(application);
-        /*util.SendDeviceId(new Util.CallBack() {
-            @Override
-            public void onSuccess(String result) {
-                Log.d("RESULT@@", "" + result);
-            }
-
-            @Override
-            public void onError(String error) {
-                Log.d("RESULT@@", "Error" + error);
-            }
-        });*/
     }
 
     public void updateFCMToken(String fcmtoken) {

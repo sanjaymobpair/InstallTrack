@@ -33,14 +33,25 @@ public class ApplicationLifecycleHandler implements Application.ActivityLifecycl
         util = new Util(activity);
         Toast.makeText(activity, "onActivityCreated", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onActivityCreated:" + getDatePref);
-       /* if (getDatePref != null) {
-            if (getDatePref.equalsIgnoreCase(formattedDate)) {
-                Log.d(TAG, "onActivityCreated : Equals");
+
+        if (InternetConnectionClass.getInstance(activity).isOnline()) {
+            Log.d(TAG, ":IF");
+            Boolean res = util.getErrorResponse();
+            String apiKey = util.getApiKey();
+            String serverKey = util.getServerKey();
+            String userAgent = util.getUserAgent();
+            String refferer_chk = util.getRefferer();
+
+            Log.d(TAG, "Boolean" + res);
+            if (res) {
+                Log.d(TAG, "If : True");
+                new Util.callapi(util.getFCMToken(), apiKey, serverKey, userAgent, refferer_chk, "INSTALL").execute();
             } else {
-                util.setCurrentDate(formattedDate);
-                Log.d(TAG, "onActivityCreated : NotEquals");
+                Log.d(TAG, "If : False");
             }
-        }*/
+        } else {
+            Log.d(TAG, ":ELSE");
+        }
     }
 
     @Override
@@ -63,14 +74,15 @@ public class ApplicationLifecycleHandler implements Application.ActivityLifecycl
         getDatePref = util.getCurrentDate();
 
         if (isInBackground) {
-            boolean isFirstTime = util.getIsFirstTime();
+            /*boolean isFirstTime = util.getIsFirstTime();
 
             Log.d(TAG, "isFirst" + isFirstTime);
             if (isFirstTime) {
                 Log.d(TAG, "isFirst : If");
             } else {
-                Log.d(TAG, "isFirst : Else");
+                Boolean isInstall = util.getBoolean();
 
+                Log.d(TAG, "isFirst : Else" + isInstall);
                 String fcmtoken, serverkey, apikey, useragent, clickId, eventId = "ACTIVE";
 
                 fcmtoken = util.getFCMToken();
@@ -80,14 +92,17 @@ public class ApplicationLifecycleHandler implements Application.ActivityLifecycl
                 clickId = util.getClickID();
                 util.setCurrentDate(formattedDate);
 
+                if (isInstall) {
+                    new Util.callapi(fcmtoken, apikey, serverkey, useragent, clickId, eventId).execute();
+                } else {
 
-                new Util.callapi(fcmtoken, apikey, serverkey, useragent, clickId, eventId).execute();
+                }
                 Toast.makeText(activity, "onActivityResumed : NotEquals", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onActivityResumed : NotEquals");
             }
+*/
 
-
-            /*if (getDatePref.equalsIgnoreCase(formattedDate)) {
+            if (getDatePref.equalsIgnoreCase(formattedDate)) {
                 Toast.makeText(activity, "onActivityResumed : Equals  ", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onActivityResumed : Equals");
             } else {
@@ -97,8 +112,9 @@ public class ApplicationLifecycleHandler implements Application.ActivityLifecycl
                 if (isFirstTime) {
                     Log.d(TAG, "isFirst : If");
                 } else {
-                    Log.d(TAG, "isFirst : Else");
+                    Boolean isInstall = util.getBoolean();
 
+                    Log.d(TAG, "isFirst : Else" + isInstall);
                     String fcmtoken, serverkey, apikey, useragent, clickId, eventId = "ACTIVE";
 
                     fcmtoken = util.getFCMToken();
@@ -108,12 +124,16 @@ public class ApplicationLifecycleHandler implements Application.ActivityLifecycl
                     clickId = util.getClickID();
                     util.setCurrentDate(formattedDate);
 
-                    new Util.callapi(fcmtoken, apikey, serverkey, useragent, clickId, eventId);
+                    if (isInstall) {
+                        new Util.callapi(fcmtoken, apikey, serverkey, useragent, clickId, eventId).execute();
+                    } else {
+
+                    }
                     Toast.makeText(activity, "onActivityResumed : NotEquals", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "onActivityResumed : NotEquals");
                 }
 
-            }*/
+            }
             Log.d(TAG, "app went to foreground");
             isInBackground = false;
         } else {
