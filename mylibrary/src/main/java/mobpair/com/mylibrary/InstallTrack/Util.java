@@ -127,6 +127,7 @@ class Util {
         putString(REFFERER, refferer);
     }
 
+
     String getRefferer() {
         return mPrefs.getString(REFFERER, "null");
     }
@@ -137,7 +138,7 @@ class Util {
      * @param clickId store clickid
      */
     void setClickId(String clickId) {
-        putString(CLICKID, "null");
+        putString(CLICKID, clickId);
     }
 
     String getClickID() {
@@ -146,7 +147,7 @@ class Util {
 
     // TODO: 16/4/18 set fcm token
     void setFCMToken(String fcmtoken) {
-        putString(FCMTOKEN, "null");
+        putString(FCMTOKEN, fcmtoken);
     }
 
     // TODO: 16/4/18 get fcm token
@@ -156,7 +157,7 @@ class Util {
 
     // TODO: 16/4/18 set api key
     void setApiKey(String apikey) {
-        putString(APIKEY, "null");
+        putString(APIKEY, apikey);
     }
 
     // TODO: 16/4/18 get api key
@@ -166,7 +167,7 @@ class Util {
 
     // TODO: 16/4/18 set server key
     void setServerKey(String serverkey) {
-        putString(SERVERKEY, "null");
+        putString(SERVERKEY, serverkey);
     }
 
     // TODO: 16/4/18 get server key
@@ -176,7 +177,7 @@ class Util {
 
     // TODO: 16/4/18 set useragent
     void setUserAgent(String userAgent) {
-        putString(USERAGENT, "null");
+        putString(USERAGENT, userAgent);
     }
 
     // TODO: 16/4/18 get useragent
@@ -366,14 +367,15 @@ class Util {
 
 
     public static class callapi extends AsyncTask<String, String, String> {
-        String token, apikey, serverkey, usergent, refferer;
+        String token, apikey, serverkey, usergent, refferer, event_id;
 
-        public callapi(String token, String apikey, String serverkey, String userAgent, String refferer) {
+        public callapi(String token, String apikey, String serverkey, String userAgent, String refferer, String eventid) {
             this.token = token;
             this.apikey = apikey;
             this.serverkey = serverkey;
             this.usergent = userAgent;
             this.refferer = refferer;
+            this.event_id = eventid;
         }
 
         @Override
@@ -404,7 +406,7 @@ class Util {
         protected String doInBackground(String... strings) {
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("mtoken", token);
-            hashMap.put("eventid", "INSTALL");
+            hashMap.put("eventid", event_id);
             hashMap.put("deviceid", Util.DeviceId(mContext));
             hashMap.put("apikey", apikey);
             hashMap.put("legacy", serverkey);

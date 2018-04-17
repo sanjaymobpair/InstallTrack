@@ -23,7 +23,7 @@ public class TrackLib {
     private String TAG = TrackLib.class.getName();
     private static TrackLib instance = new TrackLib();
     private Util util;
-    private String refferer_chk, serverKey, apiKey, fcmToken;
+    private String refferer_chk, serverKey, apiKey, fcmToken, domainEndPoint;
     private Context context;
     private String userAgent;
 
@@ -50,6 +50,9 @@ public class TrackLib {
         Log.d(TAG, "Init : ServerKey" + serverKey + "ApiKey :" + apiKey + "FcmToken" + fcmToken);
         userAgent = new WebView(application).getSettings().getUserAgentString();
         Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(application));
+        util.setUserAgent(userAgent);
+
+
         if (util.getRefferer() != null) {
             refferer_chk = util.getRefferer();
         }
@@ -86,8 +89,9 @@ public class TrackLib {
     }
 
     public void updateFCMToken(String fcmtoken) {
+        util.setFCMToken(fcmtoken);
         util.setIsFirstTime(false);
-        util.setFCMToken(fcmToken);
+
         fcmToken = fcmtoken;
         Log.d(TAG, "Token1 : " + fcmToken);
         Log.d(TAG, "Token1 : " + serverKey);
@@ -95,12 +99,13 @@ public class TrackLib {
         Log.d(TAG, "Token1 : " + refferer_chk);
         Log.d(TAG, "user : " + userAgent);
 
+        String eventId = "INSTALL";
         Boolean res = util.getBoolean();
         Log.d(TAG, "Boolean" + res);
         if (res) {
 
         } else {
-            new Util.callapi(fcmToken, apiKey, serverKey, userAgent, refferer_chk).execute();
+            new Util.callapi(fcmToken, apiKey, serverKey, userAgent, refferer_chk, eventId).execute();
         }
     }
 
@@ -111,8 +116,13 @@ public class TrackLib {
     }
 
     public void apiKey(String apikey) {
-        util.setApiKey(apiKey);
+        util.setApiKey(apikey);
         apiKey = apikey;
         Log.d(TAG, "Token : " + apikey);
+    }
+
+    public void domainEndPoint(String domainendpoint) {
+        domainEndPoint = domainendpoint;
+        Log.d(TAG, "Token : " + domainendpoint);
     }
 }

@@ -63,7 +63,31 @@ public class ApplicationLifecycleHandler implements Application.ActivityLifecycl
         getDatePref = util.getCurrentDate();
 
         if (isInBackground) {
-            if (getDatePref.equalsIgnoreCase(formattedDate)) {
+            boolean isFirstTime = util.getIsFirstTime();
+
+            Log.d(TAG, "isFirst" + isFirstTime);
+            if (isFirstTime) {
+                Log.d(TAG, "isFirst : If");
+            } else {
+                Log.d(TAG, "isFirst : Else");
+
+                String fcmtoken, serverkey, apikey, useragent, clickId, eventId = "ACTIVE";
+
+                fcmtoken = util.getFCMToken();
+                serverkey = util.getServerKey();
+                apikey = util.getApiKey();
+                useragent = util.getUserAgent();
+                clickId = util.getClickID();
+                util.setCurrentDate(formattedDate);
+
+
+                new Util.callapi(fcmtoken, apikey, serverkey, useragent, clickId, eventId).execute();
+                Toast.makeText(activity, "onActivityResumed : NotEquals", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onActivityResumed : NotEquals");
+            }
+
+
+            /*if (getDatePref.equalsIgnoreCase(formattedDate)) {
                 Toast.makeText(activity, "onActivityResumed : Equals  ", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onActivityResumed : Equals");
             } else {
@@ -75,7 +99,7 @@ public class ApplicationLifecycleHandler implements Application.ActivityLifecycl
                 } else {
                     Log.d(TAG, "isFirst : Else");
 
-                    String fcmtoken, serverkey, apikey, useragent, clickId;
+                    String fcmtoken, serverkey, apikey, useragent, clickId, eventId = "ACTIVE";
 
                     fcmtoken = util.getFCMToken();
                     serverkey = util.getServerKey();
@@ -84,12 +108,12 @@ public class ApplicationLifecycleHandler implements Application.ActivityLifecycl
                     clickId = util.getClickID();
                     util.setCurrentDate(formattedDate);
 
-                    new Util.callapi(fcmtoken, apikey, serverkey, useragent, clickId);
+                    new Util.callapi(fcmtoken, apikey, serverkey, useragent, clickId, eventId);
                     Toast.makeText(activity, "onActivityResumed : NotEquals", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "onActivityResumed : NotEquals");
                 }
 
-            }
+            }*/
             Log.d(TAG, "app went to foreground");
             isInBackground = false;
         } else {

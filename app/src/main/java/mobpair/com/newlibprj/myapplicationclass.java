@@ -15,6 +15,7 @@ public class myapplicationclass extends Application {
         super.onCreate();
         TrackLib.getInstance().init(this);
         TrackLib.getInstance().serverKey(serverKey);
-        TrackLib.getInstance().apiKey("dda15837a386ce7a5b7e3f99fefa3394_5ad43ed885c80f14511897d6");
+        TrackLib.getInstance().apiKey("63498e5007e70c082121eda21c696b6b_5ad49ed585c80f14511897eb");
+        TrackLib.getInstance().domainEndPoint("");
     }
 }
