@@ -74,34 +74,6 @@ public class ApplicationLifecycleHandler implements Application.ActivityLifecycl
         getDatePref = util.getCurrentDate();
 
         if (isInBackground) {
-            /*boolean isFirstTime = util.getIsFirstTime();
-
-            Log.d(TAG, "isFirst" + isFirstTime);
-            if (isFirstTime) {
-                Log.d(TAG, "isFirst : If");
-            } else {
-                Boolean isInstall = util.getBoolean();
-
-                Log.d(TAG, "isFirst : Else" + isInstall);
-                String fcmtoken, serverkey, apikey, useragent, clickId, eventId = "ACTIVE";
-
-                fcmtoken = util.getFCMToken();
-                serverkey = util.getServerKey();
-                apikey = util.getApiKey();
-                useragent = util.getUserAgent();
-                clickId = util.getClickID();
-                util.setCurrentDate(formattedDate);
-
-                if (isInstall) {
-                    new Util.callapi(fcmtoken, apikey, serverkey, useragent, clickId, eventId).execute();
-                } else {
-
-                }
-                Toast.makeText(activity, "onActivityResumed : NotEquals", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "onActivityResumed : NotEquals");
-            }
-*/
-
             if (getDatePref.equalsIgnoreCase(formattedDate)) {
                 Toast.makeText(activity, "onActivityResumed : Equals  ", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onActivityResumed : Equals");

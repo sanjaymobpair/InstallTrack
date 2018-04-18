@@ -334,7 +334,7 @@ class Util {
         @Override
         protected void onPostExecute(String s) {
             Util util = new Util(mContext);
-            if (s == null || s == "") {
+            if (s == null || s.equals("")) {
                 util.setErrorResponse(true);
                 Log.d("Util", "Response : " + s);
             } else {

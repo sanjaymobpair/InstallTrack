@@ -1,5 +1,6 @@
 package mobpair.com.mylibrary.InstallTrack;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -13,10 +14,10 @@ import android.webkit.WebView;
 
 public class TrackLib {
     private String TAG = TrackLib.class.getName();
+    @SuppressLint("StaticFieldLeak")
     private static TrackLib instance = new TrackLib();
     private Util util;
     private String refferer_chk, serverKey, apiKey, fcmToken, domainEndPoint;
-    private Context context;
     private String userAgent;
 
     public static TrackLib getInstance() {
@@ -38,7 +39,7 @@ public class TrackLib {
 
     public void init(Application application) {
         util = new Util(application);
-        context = application;
+        Context context = application;
         Log.d(TAG, "Init : ServerKey" + serverKey + "ApiKey :" + apiKey + "FcmToken" + fcmToken);
         userAgent = new WebView(application).getSettings().getUserAgentString();
         Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(application));
