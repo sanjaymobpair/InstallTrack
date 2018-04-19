@@ -45,7 +45,6 @@ public class TrackLib {
         Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(application));
         util.setUserAgent(userAgent);
 
-
         if (util.getRefferer() != null) {
             refferer_chk = util.getRefferer();
         }
