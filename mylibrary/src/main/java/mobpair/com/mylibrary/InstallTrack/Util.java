@@ -26,20 +26,6 @@ import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import mobpair.com.mylibrary.AuthFailureError;
-import mobpair.com.mylibrary.DefaultRetryPolicy;
-import mobpair.com.mylibrary.NetworkError;
-import mobpair.com.mylibrary.ParseError;
-import mobpair.com.mylibrary.Request;
-import mobpair.com.mylibrary.RequestQueue;
-import mobpair.com.mylibrary.Response;
-import mobpair.com.mylibrary.RetryPolicy;
-import mobpair.com.mylibrary.ServerError;
-import mobpair.com.mylibrary.TimeoutError;
-import mobpair.com.mylibrary.VolleyError;
-import mobpair.com.mylibrary.toolbox.StringRequest;
-import mobpair.com.mylibrary.toolbox.Volley;
-
 /**
  * Created by ${Mobpair} on 6/3/18.
  */

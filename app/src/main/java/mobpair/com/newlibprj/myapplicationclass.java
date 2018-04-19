@@ -16,6 +16,6 @@ public class myapplicationclass extends Application {
         TrackLib.getInstance().init(this);
         TrackLib.getInstance().serverKey(serverKey);
         TrackLib.getInstance().apiKey("63498e5007e70c082121eda21c696b6b_5ad49ed585c80f14511897eb");
-        TrackLib.getInstance().domainEndPoint("");
+        TrackLib.getInstance().domainEndPoint("technology.makeaff.com");
     }
 }

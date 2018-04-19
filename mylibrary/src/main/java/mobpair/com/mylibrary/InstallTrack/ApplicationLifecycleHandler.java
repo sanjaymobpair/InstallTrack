@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.io.BufferedOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
